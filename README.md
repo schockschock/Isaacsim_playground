@@ -5,10 +5,10 @@ this is a repo in which I am learning to write script in order to run simulation
 # Objective
 The objective is to learn how IsaacSim, PhysX and omniverse Api is working. 
 
-# Requiremnts
+# Requirements
 IsaacSim 6.0.1: https://docs.isaacsim.omniverse.nvidia.com/latest/index.html
 
-# Objective
+# Learning topics
 In this project, I want to learn the following topics:
 - In IsaacSim, using a script in headless mode, I want to load a predefined scene. Then learn how to load a USD object that I have on my server, it is a complex solid. Finally I want to define a replicator to take some pictures about the scene just to check the results.
 - In IsaacSim, I want to load several instance of the same USD object but represented by all the possible collider:
