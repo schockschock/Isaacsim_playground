@@ -8,16 +8,27 @@ The objective is to learn how IsaacSim, PhysX and omniverse Api is working.
 # Requirements
 IsaacSim 6.0.1: https://docs.isaacsim.omniverse.nvidia.com/latest/index.html
 
-# Learning topics
+# Wanted simulation script
 In this project, I want to learn the following topics:
-- In IsaacSim, using a script in headless mode, I want to load a predefined scene. Then learn how to load a USD object that I have on my server, it is a complex solid. Finally I want to define a replicator to take some pictures about the scene just to check the results.
-- In IsaacSim, I want to load several instance of the same USD object but represented by all the possible collider:
-    - MeshSimplification
-    - ConvexHull
-    - ConvexDecomposition
-    - SDF
-  Once they are loaded, side by side, The aim is to analyze how they are bouncing on the floor. That means I need to learn how to add physics to these objects and how to spawn the side by side at a certain height. I should then add a replicator, synced with the physical steps and taking pictures of the falling objects from the side.
-- In IsaacSim, I want to learn how to define a conveyor belt on which I will spawn a objet (again from the same USD). I also want to take pictures using a replicator.
+- freefall.py: Create a simple simulation where I am generating synthetic observations of a complex solid (potato) fallin on the ground of the basesample scene of IsaacSim. An exemple is defined here: '/home/adrien/Isaacsim_playground/samples/freefall.py'
+- colliders.py: Create a simular simulation but where potato prims instantiated with different colliders are falling on the ground side by side. The camera should this time look at the falling object from the side.
+- object_throw.py: A simulation where the same potato is thrown from the side with an initial velocity and initial angular velocity and rebounding on a vertical wall then on the ground. I should be able to modulate the initial velocity. A camera should see the whole trajectory.
+- conveyor.py: A simulation where the same potato is rolling then falling from the conveyor belt (using IsaacSim extention: https://docs.isaacsim.omniverse.nvidia.com/latest/digital_twin/warehouse_logistics/ext_isaacsim_asset_gen_conveyor.html)
 
-# Warnings
-This codebase is running on a remote server that does not have any screen so all the code needs to run in a headless mode.
+# Compliant scripts
+The four scripts above are implemented in `samples/simulations/` and meet all Mandatory rules (headless, PathTracing, parametrized, PNG + MP4, shared logic in `common/`, stereo cameras):
+- `samples/simulations/freefall.py` — compliant freefall (the original `samples/freefall.py` is a legacy non-compliant version: `headless: False`, no `common/` reuse — kept as a learning artifact, do not copy as a template).
+- `samples/simulations/colliders.py` — three potatoes side-by-side, `convexHull` / `convexDecomposition` / `sdf`, side-view stereo rig.
+- `samples/simulations/object_throw.py` — tunable launch velocity, rebounds off a vertical wall then the ground, wide stereo rig.
+- `samples/simulations/conveyor.py` — uses the `isaacsim.asset.gen.conveyor` extension (`create_conveyor_belt`); potato transported then falls off the end.
+
+Each writes `_output/<scenario>/{Left,Right}/rgb/rgb_*.png` + `left.mp4`, `right.mp4`, `stereo_sbs.mp4`.
+Run with: `conda deactivate && . .env && $ISAAC_SIM/python.sh samples/simulations/<script>.py`
+
+# Mandatory
+Here are requirements that are to be verified in all the written scripts:
+- The simulation run headless
+- The used rendering mode should be PathTracing. 
+- The scripts should be easily parametrized through changes in constant or config files
+- The script should save png informations and create mp4 of the simulations
+- All the common codes should be written in central files in '/home/adrien/Isaacsim_playground/common'
