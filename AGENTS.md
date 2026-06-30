@@ -3,7 +3,7 @@
 ## What this is
 Personal learning playground for NVIDIA Isaac Sim 6.0.1 (see `/home/adrien/isaacsim/VERSION`), PhysX, and Omniverse Kit APIs.
 No CI, no package manifests — scripts run one-off against the local Isaac Sim install. Pure-logic unit tests exist (`tests/`, stdlib `unittest`); see "Verification" below.
-Target scripts (see README.md, CONTEXT.md): freefall, colliders, object_throw, conveyor — all under `samples/simulations/`.
+Target scripts (see README.md, CONTEXT.md): freefall, colliders, object_throw, conveyor — all under `./simulation_scripts`.
 
 ## Environment (required, non-obvious)
 - Isaac Sim lives at `/home/adrien/isaacsim`; `. .env` exports `ISAAC_SIM`. **Autofs mount**: `ls /home/adrien/` won't show it, but direct access (`ls $ISAAC_SIM`, `cat $ISAAC_SIM/VERSION`) works.
@@ -23,7 +23,7 @@ Target scripts (see README.md, CONTEXT.md): freefall, colliders, object_throw, c
   - `stability.py` — pure settled-detection (no deps; unit-tested).
   - `loop.py` — shared capture loop (orchestrator.step + app.update + settled check).
   - `video.py` — `pngs_to_mp4` / `stereo_pair_to_mp4` via ffmpeg subprocess (no deps; unit-tested).
-- `samples/simulations/` holds the compliant scenario scripts (freefall, colliders, object_throw, conveyor).
+- `./simulation_scripts` holds the compliant scenario scripts (freefall, colliders, object_throw, conveyor).
   `samples/freefall.py` is a LEGACY pre-`common/` version: `headless: False`, hardcoded output — do NOT copy as a template.
   `get_started.py`, `sdg_example.py`, `PhysicEngine.py` are tutorial-style explorations (also `headless: False`).
 - `tests/` — stdlib `unittest` for pure logic only (`common/geometry.py`, `common/stability.py`, `common/video.py`).
@@ -52,7 +52,7 @@ Target scripts (see README.md, CONTEXT.md): freefall, colliders, object_throw, c
 
 ## Verification
 - Pure logic: `python3 -m unittest discover -s tests -v` (system python, ~1s, no GPU). 22 tests.
-- Integration: `conda deactivate && . .env && $ISAAC_SIM/python.sh samples/simulations/<script>.py` — confirm `_output/<scenario>/{Left,Right}/rgb/rgb_*.png` + the three MP4s.
+- Integration: `conda deactivate && . .env && $ISAAC_SIM/python.sh ./simulation_scripts/<script>.py` — confirm `_output/<scenario>/{Left,Right}/rgb/rgb_*.png` + the three MP4s.
 
 ## Reference examples (local — copy these patterns)
 - `$ISAAC_SIM/standalone_examples/replicator/` — synthetic data / writers (multi-camera: `scene_based_sdg.py`, `object_based_sdg.py`).

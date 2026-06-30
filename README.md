@@ -16,14 +16,14 @@ In this project, I want to learn the following topics:
 - conveyor.py: A simulation where the same potato is rolling then falling from the conveyor belt (using IsaacSim extention: https://docs.isaacsim.omniverse.nvidia.com/latest/digital_twin/warehouse_logistics/ext_isaacsim_asset_gen_conveyor.html)
 
 # Compliant scripts
-The four scripts above are implemented in `samples/simulations/` and meet all Mandatory rules (headless, PathTracing, parametrized, PNG + MP4, shared logic in `common/`, stereo cameras):
-- `samples/simulations/freefall.py` — compliant freefall (the original `samples/freefall.py` is a legacy non-compliant version: `headless: False`, no `common/` reuse — kept as a learning artifact, do not copy as a template).
-- `samples/simulations/colliders.py` — three potatoes side-by-side, `convexHull` / `convexDecomposition` / `sdf`, side-view stereo rig.
-- `samples/simulations/object_throw.py` — tunable launch velocity, rebounds off a vertical wall then the ground, wide stereo rig.
-- `samples/simulations/conveyor.py` — uses the `isaacsim.asset.gen.conveyor` extension (`create_conveyor_belt`); potato transported then falls off the end.
+The four scripts above are implemented in `./simulation_scripts/` and meet all Mandatory rules (headless, PathTracing, parametrized, PNG + MP4, shared logic in `common/`, stereo cameras):
+- `./simulation_scripts/freefall.py` — compliant freefall (the original `samples/freefall.py` is a legacy non-compliant version: `headless: False`, no `common/` reuse — kept as a learning artifact, do not copy as a template).
+- `./simulation_scripts/colliders.py` — three potatoes side-by-side, `convexHull` / `convexDecomposition` / `sdf`, side-view stereo rig.
+- `./simulation_scripts/object_throw.py` — tunable launch velocity, rebounds off a vertical wall then the ground, wide stereo rig.
+- `./simulation_scripts/conveyor.py` — uses the `isaacsim.asset.gen.conveyor` extension (`create_conveyor_belt`); potato transported then falls off the end.
 
 Each writes `_output/<scenario>/{Left,Right}/rgb/rgb_*.png` + `left.mp4`, `right.mp4`, `stereo_sbs.mp4`.
-Run with: `conda deactivate && . .env && $ISAAC_SIM/python.sh samples/simulations/<script>.py`
+Run with: `conda deactivate && . .env && $ISAAC_SIM/python.sh ./simulation_scripts/<script>.py`
 
 # Mandatory
 Here are requirements that are to be verified in all the written scripts:

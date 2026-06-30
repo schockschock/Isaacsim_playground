@@ -24,10 +24,10 @@ from common.loop import run_capture_loop, teardown
 from common.video import pngs_to_mp4, stereo_pair_to_mp4
 
 # --- Asset ---
-USD_PATH = "/data2/adrien/clean_dataset/2R1-1/2R1-1_centered.usd"
+USD_PATH = "/data1/adrien/clean_dataset/2R1-1/2R1-1_centered.usd"
 
 # --- Initial conditions (tunable) ---
-INIT_POSITION = (-0.6, 0.0, 0.4)          # launch from -X side
+INIT_POSITION = (0.0, 0.0, 0.4)          # launch from -X side
 INIT_QUATERNION = (1.0, 1.0, 0.0, 0.0)
 INIT_LINEAR_VELOCITY = (10.0, 0.0, 1.0)    # m/s — toward +X and slightly up
 INIT_ANGULAR_VELOCITY = (0.0, 0.0, 8.0)   # rad/s (converted to deg/s for PhysX)
