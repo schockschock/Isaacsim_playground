@@ -6,7 +6,7 @@ so it can be unit-tested under system python.
 """
 import math
 
-__all__ = ["rig_right_vector", "compute_eye_positions"]
+__all__ = ["angular_velocity_rad_s_to_deg_s", "compute_eye_positions", "rig_right_vector"]
 
 _UP = (0.0, 0.0, 1.0)
 _FALLBACK_RIGHT = (1.0, 0.0, 0.0)
@@ -85,3 +85,22 @@ def compute_eye_positions(base, look_at, baseline, up=_UP):
     left = _sub(base, _scale(right, half))
     right_eye = _add(base, _scale(right, half))
     return left, right_eye
+
+
+_RAD_TO_DEG = 180.0 / math.pi
+
+
+def angular_velocity_rad_s_to_deg_s(vec):
+    """Convert an angular velocity vector from radians/second to degrees/second.
+
+    The USD Physics schema defines ``physics:angularVelocity`` in degrees/second
+    (see ``usdPhysics/schema.usda`` line 193), so values set in rad/s must be
+    converted before authoring the attribute.
+
+    Args:
+        vec: (x, y, z) angular velocity in rad/s.
+
+    Returns:
+        (x, y, z) angular velocity in deg/s.
+    """
+    return tuple(v * _RAD_TO_DEG for v in vec)

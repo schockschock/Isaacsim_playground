@@ -18,7 +18,7 @@ from pxr import Gf, UsdGeom, UsdPhysics
 
 from common.app import shutdown
 from common.world import setup_stage
-from common.asset import load, add_colliders, apply_physics_material
+from common.asset import load, add_colliders, apply_physics_material, set_initial_state
 from common.replicator import setup_stereo_rig
 from common.loop import run_capture_loop, teardown
 from common.video import pngs_to_mp4, stereo_pair_to_mp4
@@ -30,7 +30,7 @@ USD_PATH = "/data2/adrien/clean_dataset/2R1-1/2R1-1_centered.usd"
 INIT_POSITION = (-0.6, 0.0, 0.4)          # launch from -X side
 INIT_QUATERNION = (1.0, 1.0, 0.0, 0.0)
 INIT_LINEAR_VELOCITY = (10.0, 0.0, 1.0)    # m/s — toward +X and slightly up
-INIT_ANGULAR_VELOCITY = (0.0, 0.0, 8.0)   # rad/s — spin about Z
+INIT_ANGULAR_VELOCITY = (0.0, 0.0, 8.0)   # rad/s (converted to deg/s for PhysX)
 
 # --- Wall (static collider across the +X side of the path) ---
 WALL_PATH = "/World/Wall"
@@ -116,8 +116,7 @@ def run_simulation() -> None:
         static_friction=OBJECT_STATIC_FRICTION,
         dynamic_friction=OBJECT_DYNAMIC_FRICTION,
     )
-    potato.GetAttribute("physics:velocity").Set(Gf.Vec3f(*INIT_LINEAR_VELOCITY))
-    potato.GetAttribute("physics:angularVelocity").Set(Gf.Vec3f(*INIT_ANGULAR_VELOCITY))
+    set_initial_state(potato, INIT_LINEAR_VELOCITY, INIT_ANGULAR_VELOCITY)
 
     # --- Capture ---
     frames, settled = run_capture_loop(

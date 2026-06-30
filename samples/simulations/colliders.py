@@ -18,7 +18,7 @@ from pxr import Gf, UsdPhysics
 
 from common.app import shutdown
 from common.world import setup_stage
-from common.asset import load, add_colliders, apply_physics_material
+from common.asset import load, add_colliders, apply_physics_material, set_initial_state
 from common.replicator import setup_stereo_rig
 from common.loop import run_capture_loop, teardown
 from common.video import pngs_to_mp4, stereo_pair_to_mp4
@@ -32,7 +32,7 @@ PRIM_NAMES = ["Potato_" + a for a in APPROXIMATIONS]
 X_OFFSETS = [-0.15, 0.0, 0.15]
 DROP_HEIGHT = 0.4
 INIT_QUATERNION = (1.0, 1.0, 0.0, 0.0)
-INIT_ANGULAR_VELOCITY = (0.0, 0.5, 5.0)   # identical spin on all three
+INIT_ANGULAR_VELOCITY = (0.0, 0.5, 5.0)   # rad/s (converted to deg/s for PhysX)
 
 # --- Object material & mass (identical across the three) ---
 OBJECT_DENSITY = 1000.0
@@ -89,7 +89,7 @@ def run_simulation() -> None:
             static_friction=OBJECT_STATIC_FRICTION,
             dynamic_friction=OBJECT_DYNAMIC_FRICTION,
         )
-        prim.GetAttribute("physics:angularVelocity").Set(Gf.Vec3f(*INIT_ANGULAR_VELOCITY))
+        set_initial_state(prim, angular_velocity_rad_s=INIT_ANGULAR_VELOCITY)
         prims.append(prim)
 
     # Monitor the middle prim for settling; MAX_FRAMES caps the rest.

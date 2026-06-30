@@ -1,7 +1,9 @@
 """Load the potato USD asset and apply collision / rigid body."""
 import omni
 import omni.replicator.core as rep
-from pxr import PhysxSchema, Usd, UsdGeom, UsdPhysics, Sdf
+from pxr import Gf, PhysxSchema, Usd, UsdGeom, UsdPhysics, Sdf
+
+from common.geometry import angular_velocity_rad_s_to_deg_s
 
 
 def load(name="Potato",
@@ -145,3 +147,26 @@ def instantiate_prim(prim_path, position=(0, 0, 0),
 
     # Return the prim for further manipulation if needed
     return prim
+
+
+def set_initial_state(prim, linear_velocity=(0.0, 0.0, 0.0),
+                      angular_velocity_rad_s=(0.0, 0.0, 0.0)):
+    """Set initial linear and angular velocity on a rigid body prim.
+
+    The USD Physics schema defines ``physics:angularVelocity`` in
+    degrees/second, so angular values in rad/s are converted via
+    ``common.geometry.angular_velocity_rad_s_to_deg_s`` before setting.
+    Linear velocity is in m/s (no conversion needed).
+
+    Uses ``RigidBodyAPI.CreateVelocityAttr()`` / ``CreateAngularVelocityAttr()``
+    to guarantee the attributes are created before setting.
+
+    Args:
+        prim: The rigid body prim.
+        linear_velocity: (vx, vy, vz) in m/s.
+        angular_velocity_rad_s: (wx, wy, wz) in rad/s.
+    """
+    rb = UsdPhysics.RigidBodyAPI(prim)
+    rb.CreateVelocityAttr().Set(Gf.Vec3f(*linear_velocity))
+    av_deg = angular_velocity_rad_s_to_deg_s(angular_velocity_rad_s)
+    rb.CreateAngularVelocityAttr().Set(Gf.Vec3f(*av_deg))

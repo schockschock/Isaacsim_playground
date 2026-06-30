@@ -83,9 +83,11 @@ def run_capture_loop(simulation_app, prim, max_frames, dt,
         if frame_idx % progress_every == 0:
             speed = float(lv[0]) ** 2 + float(lv[1]) ** 2 + float(lv[2]) ** 2
             speed = speed ** 0.5
+            ang_speed = float(av[0]) ** 2 + float(av[1]) ** 2 + float(av[2]) ** 2
+            ang_speed = ang_speed ** 0.5
             print(f"  frame {frame_idx:3d}/{max_frames}  "
                   f"pos=({float(pos[0]):.3f},{float(pos[1]):.3f},{float(pos[2]):.3f})  "
-                  f"|v|={speed:.3f}m/s")
+                  f"|v|={speed:.3f}m/s  |w|={ang_speed:.1f}deg/s")
 
         simulation_app.update()
 

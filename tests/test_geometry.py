@@ -6,7 +6,11 @@ helpers that setup_stereo_rig depends on.
 import math
 import unittest
 
-from common.geometry import rig_right_vector, compute_eye_positions
+from common.geometry import (
+    angular_velocity_rad_s_to_deg_s,
+    compute_eye_positions,
+    rig_right_vector,
+)
 
 
 def approx_eq(a, b, tol=1e-9):
@@ -80,6 +84,38 @@ class TestComputeEyePositions(unittest.TestCase):
     def test_degenerate_view_does_not_crash(self):
         left, right = compute_eye_positions(base=(0.0, 0.0, 1.0), look_at=(0.0, 0.0, 0.0), baseline=0.06)
         self.assertEqual(dist(left, right), 0.06)
+
+
+class TestAngularVelocityConversion(unittest.TestCase):
+    def test_zero_returns_zero(self):
+        result = angular_velocity_rad_s_to_deg_s((0.0, 0.0, 0.0))
+        self.assertEqual(result, (0.0, 0.0, 0.0))
+
+    def test_pi_is_180(self):
+        result = angular_velocity_rad_s_to_deg_s((0.0, 0.0, math.pi))
+        self.assertAlmostEqual(result[0], 0.0, places=9)
+        self.assertAlmostEqual(result[1], 0.0, places=9)
+        self.assertAlmostEqual(result[2], 180.0, places=9)
+
+    def test_two_pi_is_360(self):
+        result = angular_velocity_rad_s_to_deg_s((0.0, 0.0, 2.0 * math.pi))
+        self.assertAlmostEqual(result[2], 360.0, places=9)
+
+    def test_one_radian_is_about_57_3_degrees(self):
+        result = angular_velocity_rad_s_to_deg_s((1.0, 0.0, 0.0))
+        self.assertAlmostEqual(result[0], 180.0 / math.pi, places=9)
+        self.assertAlmostEqual(result[1], 0.0, places=9)
+        self.assertAlmostEqual(result[2], 0.0, places=9)
+
+    def test_returns_3_tuple_of_float(self):
+        result = angular_velocity_rad_s_to_deg_s((0.5, 5.0, 286.5))
+        self.assertEqual(len(result), 3)
+        for c in result:
+            self.assertIsInstance(c, float)
+
+    def test_negative_handled(self):
+        result = angular_velocity_rad_s_to_deg_s((0.0, 0.0, -math.pi))
+        self.assertAlmostEqual(result[2], -180.0, places=9)
 
 
 if __name__ == "__main__":

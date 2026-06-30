@@ -16,7 +16,7 @@ from pxr import Gf, UsdPhysics
 
 from common.app import shutdown
 from common.world import setup_stage
-from common.asset import load, add_colliders, apply_physics_material
+from common.asset import load, add_colliders, apply_physics_material, set_initial_state
 from common.replicator import setup_stereo_rig
 from common.loop import run_capture_loop, teardown
 from common.video import pngs_to_mp4, stereo_pair_to_mp4
@@ -28,7 +28,7 @@ USD_PATH = "/data2/adrien/clean_dataset/2R1-1/2R1-1_centered.usd"
 INIT_POSITION = (0.0, 0.0, 0.4)
 INIT_QUATERNION = (1.0, 1.0, 0.0, 0.0)   # (w, x, y, z)
 INIT_LINEAR_VELOCITY = (0.0, 0.0, 0.0)   # m/s — dropped from rest
-INIT_ANGULAR_VELOCITY = (0.0, 0.5, 5.0)  # rad/s
+INIT_ANGULAR_VELOCITY = (20.0, 5.5, 5.0)  # rad/s (converted to deg/s for PhysX)
 
 # --- Object material & mass ---
 OBJECT_DENSITY = 1000.0                  # kg/m^3
@@ -50,7 +50,7 @@ CAM_FOCAL_LENGTH = 24.0
 CAM_RESOLUTION = (720, 720)
 STEREO_BASELINE = 0.06                   # 6 cm
 
-OUTPUT_SUBDIR = "freefall"
+OUTPUT_SUBDIR = "freefall_high_angular_velocity"  # subdir of _output/ for this run
 
 
 def run_simulation() -> None:
@@ -87,8 +87,7 @@ def run_simulation() -> None:
         dynamic_friction=OBJECT_DYNAMIC_FRICTION,
     )
 
-    potato.GetAttribute("physics:velocity").Set(Gf.Vec3f(*INIT_LINEAR_VELOCITY))
-    potato.GetAttribute("physics:angularVelocity").Set(Gf.Vec3f(*INIT_ANGULAR_VELOCITY))
+    set_initial_state(potato, INIT_LINEAR_VELOCITY, INIT_ANGULAR_VELOCITY)
 
     # --- Capture ---
     frames, settled = run_capture_loop(
