@@ -31,7 +31,7 @@ installed in either python.
   produces verified MP4s (tests round-trip through `ffprobe`).
 - Isaac-Sim-bound code (camera/RP/writer/loop/asset) is **integration-tested
   by running the scenario scripts** (`$ISAAC_SIM/python.sh
-  samples/simulations/<script>.py`), not by unit tests.
+  simulation_scripts/<script>.py`), not by unit tests.
 
 ## Consequences
 - The `tests/` directory and the stdlib runner are the only test

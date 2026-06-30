@@ -11,10 +11,10 @@ Each is a standalone script producing PNG frames + an MP4 of a headless PathTrac
 
 | Scenario    | Script                                  | Definition                                                              | Camera                                  | Key physics                                            |
 |-------------|-----------------------------------------|-------------------------------------------------------------------------|-----------------------------------------|--------------------------------------------------------|
-| freefall    | samples/simulations/freefall.py         | Potato dropped onto the gridroom ground from rest with initial spin.    | static, looking at impact zone          | gravity + contact + restitution/friction               |
-| colliders   | samples/simulations/colliders.py        | Three potato prims, one per collider approximation, dropped side-by-side.| static, side view                       | freefall ×3, varying MeshCollisionAPI approximation    |
-| object_throw| samples/simulations/object_throw.py     | Potato launched from the side, rebounds off a vertical wall then ground.| static, wide framing over full trajectory | ballistic flight + wall impact + floor impact         |
-| conveyor    | samples/simulations/conveyor.py         | Potato transported by a conveyor belt then falling off the end.         | static, framing belt + drop zone        | kinematic belt (PhysxSurfaceVelocityAPI) + friction + fall-off |
+| freefall    | simulation_scripts/freefall.py         | Potato dropped onto the gridroom ground from rest with initial spin.    | static, looking at impact zone          | gravity + contact + restitution/friction               |
+| colliders   | simulation_scripts/colliders.py        | Three potato prims, one per collider approximation, dropped side-by-side.| static, side view                       | freefall ×3, varying MeshCollisionAPI approximation    |
+| object_throw| simulation_scripts/object_throw.py     | Potato launched from the side, rebounds off a vertical wall then ground.| static, wide framing over full trajectory | ballistic flight + wall impact + floor impact         |
+| conveyor    | simulation_scripts/conveyor.py         | Potato transported by a conveyor belt then falling off the end.         | static, framing belt + drop zone        | kinematic belt (PhysxSurfaceVelocityAPI) + friction + fall-off |
 
 ## Glossary (use these terms exactly)
 - **Potato** — the project's stand-in complex solid. USD at `/data2/adrien/clean_dataset/2R1-1/2R1-1_centered.usd` (centered mesh + textures). A scanned irregular rigid body, not a real potato; used in every scenario.

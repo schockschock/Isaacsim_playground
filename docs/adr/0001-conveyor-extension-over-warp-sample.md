@@ -9,7 +9,7 @@ extension docs. Isaac Sim also ships `standalone_examples/conveyor_belt/`, a
 9-file sample that implements conveyor physics with custom NVIDIA Warp
 kernels (CUDA graphs, contact-point force computation, patch redistribution).
 
-When implementing `samples/simulations/conveyor.py` we had two viable paths:
+When implementing `simulation_scripts/conveyor.py` we had two viable paths:
 
 1. **The extension** — `create_conveyor_belt(stage, prim)` returns an
    OmniGraph node; speed via a graph variable, direction via an input
@@ -25,7 +25,7 @@ Do not port the `standalone_examples/conveyor_belt/` Warp sample.
 
 ## Consequences
 - The conveyor extension is not enabled by default in the headless Python
-  experience; `samples/simulations/conveyor.py` loads it explicitly via
+  experience; `simulation_scripts/conveyor.py` loads it explicitly via
   `omni.kit.app.get_extension_manager().set_extension_enabled_immediate(...)`
   before importing `isaacsim.asset.gen.conveyor`. The import must be deferred
   until after the extension is enabled.

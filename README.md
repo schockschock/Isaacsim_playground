@@ -1,34 +1,58 @@
 # IsaacSim Playground
 
-this is a repo in which I am learning to write script in order to run simulations with Isaac Sim.
+Headless physics simulations and synthetic-data capture for building datasets — Isaac Sim 6.0.1 + PhysX + Omniverse Kit.
 
-# Objective
-The objective is to learn how IsaacSim, PhysX and omniverse Api is working. 
+## Requirements
 
-# Requirements
-IsaacSim 6.0.1: https://docs.isaacsim.omniverse.nvidia.com/latest/index.html
+- Isaac Sim 6.0.1: https://docs.isaacsim.omniverse.nvidia.com/latest/index.html
+- `.env` at the repo root exporting `ISAAC_SIM` (machine-absolute path). The install lives at `/home/adrien/isaacsim` (an autofs mount — `ls /home/adrien` won't show it; direct access works).
 
-# Wanted simulation script
-In this project, I want to learn the following topics:
-- freefall.py: Create a simple simulation where I am generating synthetic observations of a complex solid (potato) fallin on the ground of the basesample scene of IsaacSim. An exemple is defined here: '/home/adrien/Isaacsim_playground/samples/freefall.py'
-- colliders.py: Create a simular simulation but where potato prims instantiated with different colliders are falling on the ground side by side. The camera should this time look at the falling object from the side.
-- object_throw.py: A simulation where the same potato is thrown from the side with an initial velocity and initial angular velocity and rebounding on a vertical wall then on the ground. I should be able to modulate the initial velocity. A camera should see the whole trajectory.
-- conveyor.py: A simulation where the same potato is rolling then falling from the conveyor belt (using IsaacSim extention: https://docs.isaacsim.omniverse.nvidia.com/latest/digital_twin/warehouse_logistics/ext_isaacsim_asset_gen_conveyor.html)
+## Quick start
 
-# Compliant scripts
-The four scripts above are implemented in `./simulation_scripts/` and meet all Mandatory rules (headless, PathTracing, parametrized, PNG + MP4, shared logic in `common/`, stereo cameras):
-- `./simulation_scripts/freefall.py` — compliant freefall (the original `samples/freefall.py` is a legacy non-compliant version: `headless: False`, no `common/` reuse — kept as a learning artifact, do not copy as a template).
-- `./simulation_scripts/colliders.py` — three potatoes side-by-side, `convexHull` / `convexDecomposition` / `sdf`, side-view stereo rig.
-- `./simulation_scripts/object_throw.py` — tunable launch velocity, rebounds off a vertical wall then the ground, wide stereo rig.
-- `./simulation_scripts/conveyor.py` — uses the `isaacsim.asset.gen.conveyor` extension (`create_conveyor_belt`); potato transported then falls off the end.
+```sh
+conda deactivate
+. .env
+$ISAAC_SIM/python.sh ./simulation_scripts/<script>.py
+```
 
-Each writes `_output/<scenario>/{Left,Right}/rgb/rgb_*.png` + `left.mp4`, `right.mp4`, `stereo_sbs.mp4`.
-Run with: `conda deactivate && . .env && $ISAAC_SIM/python.sh ./simulation_scripts/<script>.py`
+Each script writes per-eye PNG frames + MP4 videos to `_output/<scenario>/`:
 
-# Mandatory
-Here are requirements that are to be verified in all the written scripts:
-- The simulation run headless
-- The used rendering mode should be PathTracing. 
-- The scripts should be easily parametrized through changes in constant or config files
-- The script should save png informations and create mp4 of the simulations
-- All the common codes should be written in central files in '/home/adrien/Isaacsim_playground/common'
+```
+_output/<scenario>/
+├── Left/rgb/rgb_%04d.png
+├── Right/rgb/rgb_%04d.png
+├── left.mp4
+├── right.mp4
+└── stereo_sbs.mp4
+```
+
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `simulation_scripts/freefall.py` | Potato dropped onto the gridroom ground with initial spin. Camera above the impact zone. |
+| `simulation_scripts/colliders.py` | Three potatoes dropped side-by-side, one per collider approximation (`convexHull`, `convexDecomposition`, `sdf`). Side-view camera. |
+| `simulation_scripts/object_throw.py` | Potato launched sideways with tunable linear + angular velocity, rebounding off a vertical wall then the ground. Wide camera. |
+| `simulation_scripts/conveyor.py` | Potato transported by a conveyor belt (isaacsim.asset.gen.conveyor extension), falling off the end. Camera frames belt + drop zone. |
+
+All scripts use a **two-camera stereo rig** (toed-in, default 6 cm baseline) so left/right data is available downstream.
+
+## Mandatory rules (every script in this repo)
+
+- Headless (`SimulationApp({"headless": True})` before any isaacsim/omni/pxr import).
+- Render mode = `PathTracing` (not RealTime — TAA ghosts fast-moving objects).
+- Parametrized via constants at the top-of-file (no inline magic numbers).
+- Outputs PNG frames + MP4 for both eyes.
+- Shared logic goes in `common/`, never duplicated per-script.
+
+## Repo layout
+
+| Directory / file | Purpose |
+|---|---|
+| `simulation_scripts/` | The four canonical dataset-generating scripts. |
+| `common/` | Shared layer — app lifecycle, stage setup, asset loading, replicator, stereo rig geometry, stability detection, capture loop, MP4 encoder. |
+| `tests/` | Stdlib `unittest` for pure logic (`common/geometry`, `common/stability`, `common/video`). Run with `python3 -m unittest discover -s tests -v` (system python, ~1s, no GPU). |
+| `docs/adr/` | Architecture Decision Records (why we chose the conveyor extension over the Warp sample, toed-in stereo, stdlib unittest). |
+| `CONTEXT.md` | Domain glossary — terms, canonical scenarios, invariants. |
+| `AGENTS.md` | Agent-facing reference — environment, gotchas, commands, code layout. |
+| `samples/` | Pre-`common/` exploratory scripts (`headless: False`, do not copy as templates). |

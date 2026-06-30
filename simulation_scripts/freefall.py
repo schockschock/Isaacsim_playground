@@ -102,7 +102,7 @@ def run_simulation() -> None:
     # --- MP4 ---
     # BasicWriter lays out per-eye output as <RP_name>/rgb/rgb_%04d.png
     # (one subdir per annotator). Point the encoder at the rgb/ subfolder.
-    out_root = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "_output", OUTPUT_SUBDIR)
+    out_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), "_output", OUTPUT_SUBDIR)
     left_dir = os.path.join(out_root, "Left", "rgb")
     right_dir = os.path.join(out_root, "Right", "rgb")
     fps = int(round(1.0 / DT))

@@ -152,7 +152,7 @@ def run_simulation() -> None:
     teardown(writer, rps)
 
     # --- MP4 ---
-    out_root = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "_output", OUTPUT_SUBDIR)
+    out_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), "_output", OUTPUT_SUBDIR)
     left_dir = os.path.join(out_root, "Left", "rgb")
     right_dir = os.path.join(out_root, "Right", "rgb")
     fps = int(round(1.0 / DT))
